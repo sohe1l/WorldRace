@@ -69,31 +69,6 @@ export default {
   },
 
   methods: {
-    storageAvailable: function (type) {
-      // ref: https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API/Using_the_Web_Storage_API
-      var storage
-      var x = '__storage_test__'
-
-      try {
-        storage = window[type]
-        storage.setItem(x, x)
-        storage.removeItem(x)
-        return true
-      } catch (e) {
-        return e instanceof DOMException && (
-          // everything except Firefox
-          e.code === 22 ||
-          // Firefox
-          e.code === 1014 ||
-          // test name field too, because code might not be present
-          // everything except Firefox
-          e.name === 'QuotaExceededError' ||
-          // Firefox
-          e.name === 'NS_ERROR_DOM_QUOTA_REACHED') &&
-          // acknowledge QuotaExceededError only if there's something already stored
-          storage.length !== 0
-      }
-    },
     formatElapsed: function (start, end) {
       if (end == null || end === 0) return ''
 
@@ -129,23 +104,22 @@ export default {
     },
     // type will be start or end
     updatePosition: function (position, type, startMills) {
-      var rr = null
+      var record = null
       this.records.forEach(r => {
         if (r.startMills === startMills) {
-          console.log('found z ' + r.endMills)
-          rr = r
+          record = r
         }
       })
-      if (rr == null) {
+      if (record == null) {
         return
       }
 
       if (type === 'start') {
-        rr.latStart = position.coords.latitude
-        rr.lngStart = position.coords.longitude
+        record.latStart = position.coords.latitude
+        record.lngStart = position.coords.longitude
       } else if (type === 'end') {
-        rr.latEnd = position.coords.latitude
-        rr.lngEnd = position.coords.longitude
+        record.latEnd = position.coords.latitude
+        record.lngEnd = position.coords.longitude
       }
       this.updateLocalStorage()
     },
@@ -161,18 +135,43 @@ export default {
       this.updateLocalStorage()
     },
     recordEnded: function (startMills, endMills) {
-      var rr = null
+      var record = null
       this.records.forEach(r => {
         if (r.startMills === startMills) {
           console.log('found z ' + r.endMills)
-          rr = r
+          record = r
         }
       })
-      if (rr == null) {
+      if (record == null) {
         return
       }
-      rr.endMills = Number(endMills)
+      record.endMills = Number(endMills)
       this.updateLocalStorage()
+    },
+    storageAvailable: function (type) {
+      // ref: https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API/Using_the_Web_Storage_API
+      var storage
+      var x = '__storage_test__'
+
+      try {
+        storage = window[type]
+        storage.setItem(x, x)
+        storage.removeItem(x)
+        return true
+      } catch (e) {
+        return e instanceof DOMException && (
+          // everything except Firefox
+          e.code === 22 ||
+          // Firefox
+          e.code === 1014 ||
+          // test name field too, because code might not be present
+          // everything except Firefox
+          e.name === 'QuotaExceededError' ||
+          // Firefox
+          e.name === 'NS_ERROR_DOM_QUOTA_REACHED') &&
+          // acknowledge QuotaExceededError only if there's something already stored
+          storage.length !== 0
+      }
     }
   }
 }

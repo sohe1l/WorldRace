@@ -81,7 +81,6 @@ export default {
     },
 
     start: function () {
-      // reset the record
       this.reset()
       this.record.startMills = Date.now()
       Event.$emit(this.timerKey + '_new_record', this.record.startMills)
@@ -111,7 +110,6 @@ export default {
         timeout: 10000
       }
       navigator.geolocation.getCurrentPosition(function (position) {
-        // this.updatePosition(position, type, startMills)
         Event.$emit(this.timerKey + '_update_pos', position, type, startMills)
       }.bind(this),
       this.positionError,
