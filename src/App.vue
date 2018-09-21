@@ -1,7 +1,20 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png">
+    <section class="hero">
+      <div class="hero-body">
+        <div class="container">
+          <h1 class="title">
+            The Race Around the World
+          </h1>
+          <h2 class="subtitle">
+            ClickTime Internship Application
+          </h2>
+        </div>
+      </div>
+    </section>
+
     <router-view/>
+
   </div>
 </template>
 
@@ -12,12 +25,4 @@ export default {
 </script>
 
 <style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
 </style>
